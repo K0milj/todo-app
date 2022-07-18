@@ -5,16 +5,15 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 import { db } from "./firebase-config";
-import { collection, addDoc} from "firebase/firestore";
-import BasicTable from "./mui_components/Basic_Table";
+import { collection, addDoc, serverTimestamp} from "firebase/firestore";
+import TodoList from "./mui_components/TodoList";
+import Button from '@mui/material/Button';
+import firebase from 'firebase/compat/app';
 
 function App() {
   const [input, setInput] = useState('');
   const [input2, setInput2] = useState('');
-  const [input3, setInput3] = useState('');
   const [style, setStyle] = useState("addTodoWrapper");
-  const [btnStyle, setBtnStyle] = useState("addTodoBtn");
-  //const [todoStyle, setTodoStyle] = useState("todo");
 
   const todosRef = collection(db, "todos");
 
@@ -24,6 +23,8 @@ function App() {
 
   const hideAddTodo = () => {
     setStyle("addTodoWrapper");
+    setInput('');
+    setInput2('');
   };
 
   const addTodo = async() => {
@@ -58,7 +59,8 @@ function App() {
     await addDoc(todosRef, {
       text: input,
       dueDate: date,
-      comment: input3
+      comments: [],
+      timestamp: serverTimestamp()
     });
     setInput('');
     window.location.reload();
@@ -75,13 +77,12 @@ function App() {
             <input type="text" placeholder="Enter todo:" value={input} onChange={event => setInput(event.target.value)}/>
             <br />
             <input type="datetime-local" value={input2} onChange={event => setInput2(event.target.value)}/>
-            <textarea value={input3} onChange={event => setInput3(event.target.value)}></textarea>
-            <button onClick={addTodo} className={btnStyle} disabled={!input}>Add Todo</button>
+            <Button sx={{margin: '10px 0'}} variant="outlined" onClick={addTodo} disabled={!input || !input2}>Add Todo</Button>
           </div>
         </div>
       </div>
       <div className="main-wrapper">
-        <BasicTable />
+        <TodoList />
       </div>
     </>
   );
