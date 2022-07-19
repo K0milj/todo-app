@@ -1,25 +1,24 @@
 import React from "react";
 import Nav from "./Nav";
 import './index.css';
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 import { db } from "./firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import TodoList from "./mui_components/TodoList";
+import TodoList from "./components/TodoList";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Divider } from "@mui/material";
 
 function App() {
   const [input, setInput] = useState('');
   const [input2, setInput2] = useState('');
   const [style, setStyle] = useState("addTodoWrapper");
-  const [importance, setImportance] = React.useState('');
+  const [importance, setImportance] = useState('');
 
   const handleImportance = (event) => {
     setImportance(event.target.value);
@@ -75,8 +74,6 @@ function App() {
     window.location.reload();
   }
 
-
-
   return (
     <>
       <Nav />
@@ -85,7 +82,7 @@ function App() {
         <div className="addTodo">
           <FontAwesomeIcon icon={faX} onClick={hideAddTodo} className="hideTodoBtn" style={{ color: "black" }}></FontAwesomeIcon>
           <div>
-            <input type="text" placeholder="Enter todo:" value={input} onChange={event => setInput(event.target.value)} />
+            <input type="text" maxLength={30} placeholder="Enter todo:" value={input} onChange={event => setInput(event.target.value)} />
             <br />
             <input type="datetime-local" value={input2} onChange={event => setInput2(event.target.value)} />
             <Box sx={{ minWidth: 120, marginTop: 1 }}>

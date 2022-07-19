@@ -10,6 +10,7 @@
 body {
     position: relative;
     height: 100vh;
+    background-color: #f8f8f8;
 }
 
 a {
@@ -22,7 +23,7 @@ nav {
     align-items: center;
     justify-content: space-between;
     padding: 5px 20px;
-    background-color: #1CB0F6;
+    background-color: #bdbdbd;
     color: white;
 }
 
@@ -35,6 +36,9 @@ nav {
     width: 100%;
     padding: 20px;
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .no-todos {
@@ -83,7 +87,7 @@ nav {
     top: 0;
     left: 0;
     display: flex;
-    animation: addTodoPopup .3s ease-in;
+    animation: addTodoPopup .6s ease-in;
     z-index: 99;
 }
 
@@ -153,6 +157,30 @@ textarea {
 
 .icon:hover {
     cursor: pointer;
+}
+
+.invdisplay-todo-info-wrapper{
+    display: none;
+}
+
+.display-todo-info-wrapper{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    animation: showTodoInfo .2s ease-in;
+    z-index: 1;
+    cursor: default;
+}
+
+@keyframes showTodoInfo {
+    0%{
+        opacity: 0;
+    }
+
+    100%{
+        opacity: 1;
+    }
 }
 
 @media screen and (min-width: 601px) {
