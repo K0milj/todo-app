@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react'
+import Nav from './Nav';
 import { db } from "../firebase-config";
 import { collection, getDocs, deleteDoc, updateDoc, doc, query, orderBy, arrayUnion, arrayRemove } from "firebase/firestore";
 
@@ -54,7 +55,7 @@ const InputComment = ({ AddComment }) => {
                         AddComment(inputComment);
                     }}
                 />
-            </Tooltip>   
+            </Tooltip>
         </Box>
     );
 };
@@ -65,7 +66,6 @@ export default function TodoList() {
     //useStates
     const [newTodos, setNewTodos] = useState([]);
     //const [finishedTodos, setFinishedTodos] = useState([]);
-    const [inputComment, setInputComment] = useState('');
 
     //style for the list component
     const style = {
@@ -172,82 +172,86 @@ export default function TodoList() {
     if (newTodos.length == 0) {
         return (
             <div className="no-todos">
-                <p>You are all done!</p>
+                <Nav />
                 <img src={todopic} alt="todopic" />
+                <p>You are all done!</p>
             </div>
         )
         //if you have items render this
     } else {
         return (
             <div>
-                <List
-                    sx={{
-                        minWidth: 360,
-                        backgroundColor: '#f8f8f8'
-                    }}
-                >
-                    {/* start of mapping out each indivudal item */}
-                    {newTodos.map((todo) => (
-                        <div key={todo.id}>
-                            <Accordion sx={{
-                                margin: "10px 0",
-                                
-                            }}>
-                                <AccordionSummary
-                                    expandIcon={<MoreHorizIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography style={{ color: todo.importance == "Primary" ? "#ff3333" : "black" }}>{todo.text}</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Typography variant="body2">
-                                        Due until: {todo.dueDate}
-                                    </Typography>
-                                    <Typography variant="body2">Importance: {todo.importance}</Typography>
-                                    <Accordion style={{
-                                        margin: "10px 0"
-                                    }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                        >
-                                            <Badge badgeContent={todo.comments.length} color="primary">
-                                                <ModeCommentIcon style={{ fontSize: "1.3rem" }} color="action" />
-                                            </Badge>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            <List sx={style}>
-                                                {todo.comments.map(comment => {
-                                                    return (
-                                                        <Box key={comment}>
-                                                            <ListItem style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                                                <Typography variant="caption">{comment}</Typography>
-                                                                <Tooltip title='Delete Comment'>
-                                                                    <DeleteOutlineIcon className="icon" onClick={() => deleteComment(todo.id, comment)} />
-                                                                </Tooltip>
-                                                            </ListItem>
-                                                            <Divider />
-                                                        </Box>
-                                                    )
-                                                })}
-                                                <InputComment AddComment={(comment) => AddComment(todo.id, comment)} />
-                                            </List>
-                                        </AccordionDetails>
-                                    </Accordion>
-                                    <div style={{display: 'flex'}}>
-                                        <Tooltip title='Delete Todo'>
-                                            <DeleteOutlineIcon sx={{marginRight: 1}} className="icon" onClick={() => deleteTodo(todo.id)} />
-                                        </Tooltip>
-                                        <ChangeTodoInfo todoId={todo.id}/>
-                                    </div>
-                                </AccordionDetails>
-                            </Accordion>
-                            <Divider />
-                        </div>
-                    ))}
-                </List>
+                <Nav />
+                <div className="todos-wrapper">
+                    <List
+                        sx={{
+                            minWidth: 360,
+                            backgroundColor: '#f8f8f8',
+                            padding: "20px"
+                        }}
+                    >
+                        {/* start of mapping out each indivudal item */}
+                        {newTodos.map((todo) => (
+                            <div key={todo.id}>
+                                <Accordion sx={{
+                                    margin: "10px 0",
+                                }}>
+                                    <AccordionSummary
+                                        expandIcon={<MoreHorizIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography style={{ color: todo.importance == "Primary" ? "#ff3333" : "black" }}>{todo.text}</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography variant="body2">
+                                            Due until: {todo.dueDate}
+                                        </Typography>
+                                        <Typography variant="body2">Importance: {todo.importance}</Typography>
+                                        <Accordion style={{
+                                            margin: "10px 0"
+                                        }}>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                            >
+                                                <Badge badgeContent={todo.comments.length} color="primary">
+                                                    <ModeCommentIcon style={{ fontSize: "1.3rem" }} color="action" />
+                                                </Badge>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <List sx={style}>
+                                                    {todo.comments.map(comment => {
+                                                        return (
+                                                            <Box key={comment}>
+                                                                <ListItem style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                                    <Typography variant="caption">{comment}</Typography>
+                                                                    <Tooltip title='Delete Comment'>
+                                                                        <DeleteOutlineIcon className="icon" onClick={() => deleteComment(todo.id, comment)} />
+                                                                    </Tooltip>
+                                                                </ListItem>
+                                                                <Divider />
+                                                            </Box>
+                                                        )
+                                                    })}
+                                                    <InputComment AddComment={(comment) => AddComment(todo.id, comment)} />
+                                                </List>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                        <div style={{ display: 'flex' }}>
+                                            <Tooltip title='Delete Todo'>
+                                                <DeleteOutlineIcon sx={{ marginRight: 1 }} className="icon" onClick={() => deleteTodo(todo.id)} />
+                                            </Tooltip>
+                                            <ChangeTodoInfo todoId={todo.id} />
+                                        </div>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Divider />
+                            </div>
+                        ))}
+                    </List>
+                </div>
                 <div>
                     <Snackbar
                         open={open}

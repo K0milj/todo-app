@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState} from 'react'
+import { useState } from 'react'
 import { db } from "../firebase-config";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 
@@ -30,28 +30,28 @@ const ChangeTodoInfo = ({ todoId }) => {
         <React.Fragment>
             <CardContent>
                 <FontAwesomeIcon icon={faX} onClick={() => setTodoInfoStyle('invdisplay-todo-info-wrapper')} className="hideTodoBtn" style={{ color: "black" }}></FontAwesomeIcon>
-                <Input type="text" placeholder="Enter new todo name:" inputProps={ariaLabel} value={input} onChange={event => setInput(event.target.value)}/>
-                <Input sx={{margin: "10px 0"}} type="datetime-local" inputProps={ariaLabel} value={input2} onChange={event => setInput2(event.target.value)}/>
+                <Input type="text" placeholder="Enter new todo name:" inputProps={ariaLabel} value={input} onChange={event => setInput(event.target.value)} />
+                <Input sx={{ margin: "10px 0" }} type="datetime-local" inputProps={ariaLabel} value={input2} onChange={event => setInput2(event.target.value)} />
                 <InputLabel id="demo-simple-select-label">Importance</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={importance}
-                  label="Importance"
-                  onChange={handleImportance}
-                  sx={{width: "100%"}}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={importance}
+                    label="Importance"
+                    onChange={handleImportance}
+                    sx={{ width: "100%" }}
                 >
-                  <MenuItem value={"Primary"}>Primary</MenuItem>
-                  <MenuItem value={"Secondary"}>Secondary</MenuItem>
+                    <MenuItem value={"Primary"}>Primary</MenuItem>
+                    <MenuItem value={"Secondary"}>Secondary</MenuItem>
                 </Select>
             </CardContent>
             <CardActions>
-            <Button size="small" onClick={() => updateTodo()}>Update Todo</Button>
+                <Button size="small" onClick={() => updateTodo()}>Update Todo</Button>
             </CardActions>
         </React.Fragment>
     );
-    
-    const updateTodo = async() => {
+
+    const updateTodo = async () => {
         const todoDoc = doc(db, "todos", todoId);
         const docSnap = await getDoc(todoDoc);
         const todoText = docSnap.data().text;
@@ -68,19 +68,19 @@ const ChangeTodoInfo = ({ todoId }) => {
         var min = date.getMinutes();
 
         if (dd < 10) {
-        dd = '0' + dd;
+            dd = '0' + dd;
         }
 
         if (mm < 10) {
-        mm = '0' + mm;
+            mm = '0' + mm;
         }
 
         if (h < 10) {
-        h = '0' + h;
+            h = '0' + h;
         }
 
         if (min < 10) {
-        min = '0' + min;
+            min = '0' + min;
         }
         date = mm + '-' + dd + '-' + y + " " + h + ":" + min;
 
@@ -92,11 +92,11 @@ const ChangeTodoInfo = ({ todoId }) => {
 
         window.location.reload();
     }
-    
-    return(
+
+    return (
         <div className="icon">
             <Tooltip title='Edit Todo'>
-                <EditIcon onClick={() => setTodoInfoStyle('display-todo-info-wrapper')}/>
+                <EditIcon onClick={() => setTodoInfoStyle('display-todo-info-wrapper')} />
             </Tooltip>
             <Box className={todoInfoStyle}>
                 <Card variant="outlined">{card}</Card>

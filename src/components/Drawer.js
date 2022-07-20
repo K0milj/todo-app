@@ -7,8 +7,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import TaskIcon from '@mui/icons-material/Task';
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Link } from 'react-router-dom';
 
 export default function TemporaryDrawer() {
   const [state, setState] = React.useState({
@@ -31,14 +31,16 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <ListItem key='Contacts' disablePadding>
+        <Link to='/'>
+          <ListItem key='Contacts' disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                <ContactPhoneIcon />
+                <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary='Contacts' />
+              <ListItemText primary='Log out' />
             </ListItemButton>
           </ListItem>
+        </Link>
       </List>
     </Box>
   );
@@ -47,7 +49,7 @@ export default function TemporaryDrawer() {
     <div>
       {['right'].map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)} style={{color: "white"}}>Menu</Button>
+          <Button onClick={toggleDrawer(anchor, true)} style={{ color: "white" }}>Menu</Button>
           <Drawer
             anchor={anchor}
             open={state[anchor]}

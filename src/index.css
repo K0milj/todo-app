@@ -25,17 +25,17 @@ nav {
     padding: 5px 20px;
     background-color: #bdbdbd;
     color: white;
+    width: 100%;
 }
 
 .side-nav-inv {
     display: none;
 }
 
-.main-wrapper {
+.todos-wrapper {
     position: relative;
     width: 100%;
-    padding: 20px;
-    margin: 0 auto;
+    margin: 20px auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,13 +45,12 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column-reverse;
-    font-size: 1.2rem;
+    flex-direction: column;
 }
 
 .no-todos img {
     margin-bottom: 20px;
-    width: 50%;
+    width: 30%;
 }
 
 #addBtn {
@@ -159,11 +158,11 @@ textarea {
     cursor: pointer;
 }
 
-.invdisplay-todo-info-wrapper{
+.invdisplay-todo-info-wrapper {
     display: none;
 }
 
-.display-todo-info-wrapper{
+.display-todo-info-wrapper {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -174,11 +173,11 @@ textarea {
 }
 
 @keyframes showTodoInfo {
-    0%{
+    0% {
         opacity: 0;
     }
 
-    100%{
+    100% {
         opacity: 1;
     }
 }
