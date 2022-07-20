@@ -205,9 +205,12 @@ export default function TodoList() {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Typography variant="body2">
+                                            Added by: {todo.addedBy}
+                                        </Typography>
+                                        <Typography variant="body2">
                                             Due until: {todo.dueDate}
                                         </Typography>
-                                        <Typography variant="body2">Importance: {todo.importance}</Typography>
+                                        {/* <Typography variant="body2">Importance: {todo.importance}</Typography> */}
                                         <Accordion style={{
                                             margin: "10px 0"
                                         }}>

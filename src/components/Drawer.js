@@ -8,12 +8,16 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {auth} from '../firebase-config';
+import { signOut } from 'firebase/auth';
 
 export default function TemporaryDrawer() {
   const [state, setState] = React.useState({
     right: false,
   });
+
+  const navigate = useNavigate();
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -23,6 +27,11 @@ export default function TemporaryDrawer() {
     setState({ ...state, [anchor]: open });
   };
 
+  const logout = async() => {
+    await signOut(auth);
+    navigate('/');
+  }
+
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -31,8 +40,7 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <Link to='/'>
-          <ListItem key='Contacts' disablePadding>
+          <ListItem key='Contacts' disablePadding onClick={logout}>
             <ListItemButton>
               <ListItemIcon>
                 <LogoutIcon />
@@ -40,7 +48,6 @@ export default function TemporaryDrawer() {
               <ListItemText primary='Log out' />
             </ListItemButton>
           </ListItem>
-        </Link>
       </List>
     </Box>
   );

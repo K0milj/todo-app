@@ -1,12 +1,15 @@
 import React from 'react'
 import '../index.css';
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 
 import { db } from "../firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {onAuthStateChanged} from 'firebase/auth'
+import {auth} from '../firebase-config';
+
 import TodoList from "../components/TodoList";
 
 import Button from '@mui/material/Button';
@@ -17,8 +20,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 function Todos() {
-    const [input, setInput] = useState('');
-    const [input2, setInput2] = useState('');
+    const [todoName, setTodoName] = useState('');
+    const [todoDate, setTodoDate] = useState('');
     const [style, setStyle] = useState("addTodoWrapper");
     const [importance, setImportance] = useState('');
 
@@ -34,12 +37,21 @@ function Todos() {
 
     const hideAddTodo = () => {
         setStyle("addTodoWrapper");
-        setInput('');
-        setInput2('');
+        setTodoName('');
+        setTodoDate('');
     };
 
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+
+    }, [])
+
     const addTodo = async () => {
-        var date = new Date(input2);
+        var date = new Date(todoDate);
         var dd = date.getDate();
 
         var mm = date.getMonth() + 1;
@@ -66,13 +78,13 @@ function Todos() {
         date = mm + '-' + dd + '-' + y + " " + h + ":" + min;
 
         await addDoc(todosRef, {
-            text: input,
+            text: todoName,
+            addedBy: user.displayName || user.email,
             dueDate: date,
             comments: [],
             timestamp: serverTimestamp(),
             importance: importance
         });
-        setInput('');
         window.location.reload();
     }
     return (
@@ -82,9 +94,9 @@ function Todos() {
                 <div className="addTodo">
                     <FontAwesomeIcon icon={faX} onClick={hideAddTodo} className="hideTodoBtn" style={{ color: "black" }}></FontAwesomeIcon>
                     <div>
-                        <input type="text" maxLength={30} placeholder="Enter todo:" value={input} onChange={event => setInput(event.target.value)} />
+                        <input type="text" maxLength={30} placeholder="Enter todo:" value={todoName} onChange={event => setTodoName(event.target.value)} />
                         <br />
-                        <input type="datetime-local" value={input2} onChange={event => setInput2(event.target.value)} />
+                        <input type="datetime-local" value={todoDate} onChange={event => setTodoDate(event.target.value)} />
                         <Box sx={{ minWidth: 120, marginTop: 1 }}>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Importance</InputLabel>
@@ -100,7 +112,7 @@ function Todos() {
                                 </Select>
                             </FormControl>
                         </Box>
-                        <Button sx={{ margin: '10px 0' }} variant="outlined" onClick={addTodo} disabled={!input || !input2}>Add Todo</Button>
+                        <Button sx={{ margin: '10px 0' }} variant="outlined" onClick={addTodo} disabled={!todoName || !todoDate || !importance}>Add Todo</Button>
                     </div>
                 </div>
             </div>
