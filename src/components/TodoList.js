@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react'
 import Nav from './Nav';
 import { db } from "../firebase-config";
 import { collection, getDocs, deleteDoc, updateDoc, doc, query, orderBy, arrayUnion, arrayRemove } from "firebase/firestore";
-
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase-config';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -26,7 +27,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import todopic from "../img/undraw_completing_re_i7ap.svg"
 import ChangeTodoInfo from "./ChangeTodoInfo";
-import { async } from "@firebase/util";
+// import { async } from "@firebase/util";
 
 const InputComment = ({ AddComment }) => {
     const [inputComment, setInputComment] = useState('');
@@ -65,7 +66,15 @@ export default function TodoList() {
 
     //useStates
     const [newTodos, setNewTodos] = useState([]);
+    const [user, setUser] = useState({});
     //const [finishedTodos, setFinishedTodos] = useState([]);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+
+    }, [])
 
     //style for the list component
     const style = {
@@ -75,13 +84,13 @@ export default function TodoList() {
     };
 
     //getting the link to the db
-    const todosRef = collection(db, "todos");
+    const todosRef = collection(db, 'todos');
     //const finishedTodosRef = collection(db, "finishedTodos");
 
     //get the db data
     useEffect(() => {
         const getTodos = async () => {
-            const q = query(todosRef, orderBy("timestamp", "desc"));
+            const q = query(todosRef, orderBy("importance", "desc"));
             const data = await getDocs(q);
             setNewTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
         }
@@ -173,8 +182,8 @@ export default function TodoList() {
         return (
             <div className="no-todos">
                 <Nav />
-                <img src={todopic} alt="todopic" />
-                <p>You are all done!</p>
+                <img id="hero-img" src={todopic} alt="todopic" />
+                <Typography variant="h4">You are all done!</Typography>
             </div>
         )
         //if you have items render this

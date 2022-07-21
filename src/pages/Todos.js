@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 
 import { db } from "../firebase-config";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import {onAuthStateChanged} from 'firebase/auth'
-import {auth} from '../firebase-config';
+import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase-config';
 
 import TodoList from "../components/TodoList";
 
@@ -24,6 +24,7 @@ function Todos() {
     const [todoDate, setTodoDate] = useState('');
     const [style, setStyle] = useState("addTodoWrapper");
     const [importance, setImportance] = useState('');
+    const [user, setUser] = useState({});
 
     const handleImportance = (event) => {
         setImportance(event.target.value);
@@ -41,14 +42,14 @@ function Todos() {
         setTodoDate('');
     };
 
-    const [user, setUser] = useState({});
-
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
         });
 
     }, [])
+
+    const userRef = doc(db, "users", "Ftg0fMHQyCUsL7ctjtnzSoQghM43");
 
     const addTodo = async () => {
         var date = new Date(todoDate);
@@ -84,6 +85,18 @@ function Todos() {
             comments: [],
             timestamp: serverTimestamp(),
             importance: importance
+        });
+
+        const todo = {
+            text: todoName,
+            addedBy: user.displayName || user.email,
+            dueDate: date,
+            comments: [],
+            importance: importance
+        }
+
+        await updateDoc(userRef, {
+            todos: arrayUnion(todo)
         });
         window.location.reload();
     }

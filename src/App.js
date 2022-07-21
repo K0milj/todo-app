@@ -1,16 +1,15 @@
 import React from "react";
 import Todos from "./pages/Todos";
 import Login from "./pages/Login";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/todos" element={<Todos />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/todos" element={<ProtectedRoute><Todos /></ProtectedRoute>} />
+    </Routes>
   );
 }
 
