@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from 'react'
 import Nav from './Nav';
 import { db } from "../firebase-config";
-import { collection, getDocs, deleteDoc, updateDoc, doc, query, orderBy, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, updateDoc, doc, query, orderBy, getDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase-config';
 import List from '@mui/material/List';
@@ -67,15 +67,14 @@ export default function TodoList() {
 
     //useStates
     const [newTodos, setNewTodos] = useState([]);
-    //const [user, setUser] = useState({});
-    //const [finishedTodos, setFinishedTodos] = useState([]);
+    const [user, setUser] = useState({});
 
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (currentUser) => {
-    //         setUser(currentUser);
-    //     });
+    useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
 
-    // }, [])
+    }, [])
 
     //style for the list component
     const style = {
@@ -84,52 +83,22 @@ export default function TodoList() {
         bgcolor: 'background.paper',
     };
 
-    //getting the link to the db
-    const todosRef = collection(db, 'todos');
-    //const finishedTodosRef = collection(db, "finishedTodos");
-
-    //get the db data and display it based on the timestamps
-    useEffect(() => {
-        const getTodos = async () => {
-            const q = query(todosRef, orderBy("timestamp", "desc"));
-            const data = await getDocs(q);
-            setNewTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-        }
-        getTodos();
-    }, [])
-
-    // useEffect(() => {
-    //     const getFinishedTodos = async () => {
-    //         const q = query(todosRef, orderBy("timestamp", "desc"));
-    //         const data = await getDocs(q);
-    //         setFinishedTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    //     }
-    //     getFinishedTodos();
-    // }, [])
-
-    //delete a todo
-    const deleteTodo = async (id) => {
-        const todoDoc = doc(db, "todos", id);
-        await deleteDoc(todoDoc);
-        window.location.reload();
+    //get the db user's todos and display them
+    const getTodos = async () => {
+        const userDoc = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userDoc);
+        const todoList = docSnap.data().todos;
+        setNewTodos(todoList);
     }
 
-    // const finishTodo = async (id) => {
-    //     const todoDoc = doc(db, "todos", id);
-    //     const docSnap = await getDoc(todoDoc);
-    //     let todoText = docSnap.data().text;
-    //     await deleteDoc(todoDoc);
-    //     await addDoc(finishedTodosRef, {
-    //         text: todoText
-    //     });
-    //     window.location.reload();
-    // }
-
-    // const deleteFinishedTodo = async (id) => {
-    //     const finisedTodoDoc = doc(db, "finishedTodos", id);
-    //     await deleteDoc(finisedTodoDoc);
-    //     window.location.reload();
-    //}
+    //delete a user's todo
+    const deleteTodo = async (todo) => {
+        const userDoc = doc(db, "users", user.uid);
+        await updateDoc(userDoc, {
+            todos: arrayRemove(todo)
+        });
+        window.location.reload();
+    }
 
     //add a comment for a todo
     const AddComment = async (id, newComment) => {
@@ -181,13 +150,13 @@ export default function TodoList() {
     //if no items render this
     if (newTodos.length == 0) {
         return (
-            <div className="no-todos">
+            <div className="no-todos" onLoad={getTodos}>
                 <Nav />
                 <img id="hero-img" src={todopic} alt="todopic" />
                 <Typography variant="h4">You are all done!</Typography>
             </div>
         )
-    //if you have items render this
+        //if you have items render this
     } else {
         return (
             <div>
@@ -203,7 +172,7 @@ export default function TodoList() {
                     >
                         {/* start of mapping out each indivudal item */}
                         {newTodos.map((todo) => (
-                            <div key={todo.id}>
+                            <div key={todo.text}>
                                 <Accordion sx={{
                                     margin: "10px 0",
                                 }}>
@@ -215,8 +184,8 @@ export default function TodoList() {
                                         <Typography style={{ color: todo.importance == "Primary" ? "#ff3333" : "black" }}>{todo.text}</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography variant="body2" sx={{display: "flex", alignItems: "center"}}>
-                                            {todo.addedBy} <Avatar sx={{marginLeft: '7px', width: '30px', height: '30px'}} src={todo.userPic ? todo.userPic : ""} alt="profile-pic" referrerPolicy="no-referrer" />
+                                        <Typography variant="body2" sx={{ display: "flex", alignItems: "center", marginBottom: '5px' }}>
+                                            {todo.addedBy} <img style={{ marginLeft: '7px', width: '30px', height: '30px', borderRadius: "50%" }} src={todo.userPic ? todo.userPic : ""} alt="profile-pic" referrerPolicy="no-referrer" />
                                         </Typography>
                                         <Typography variant="body2">
                                             Due until: {todo.dueDate}
@@ -252,9 +221,10 @@ export default function TodoList() {
                                                 </List>
                                             </AccordionDetails>
                                         </Accordion>
+                                        {/* <Typography sx={{ float: 'right' }} variant="caption">Posted on: {todo.timestamp.toDate().toDateString()}</Typography> */}
                                         <div style={{ display: 'flex' }}>
                                             <Tooltip title='Delete Todo'>
-                                                <DeleteOutlineIcon sx={{ marginRight: 1 }} className="icon" onClick={() => deleteTodo(todo.id)} />
+                                                <DeleteOutlineIcon sx={{ marginRight: 1 }} className="icon" onClick={() => deleteTodo(todo)} />
                                             </Tooltip>
                                             <ChangeTodoInfo todoId={todo.id} />
                                         </div>

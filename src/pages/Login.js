@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, provider } from "../firebase-config";
 import '../login-register.css'
 import { signInWithPopup } from "firebase/auth";
 import { db } from "../firebase-config";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
-import { onAuthStateChanged } from 'firebase/auth'
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import GoogleButton from 'react-google-button';
@@ -16,11 +15,17 @@ function Login() {
 
     //add a new user to the 'users' collection (if the user exists, nothing happens)
     const addUser = async (username, userid) => {
-        await setDoc(doc(db, 'users', userid), {
-            name: username
-        })
+        const docRef = doc(db, "users", userid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+        } else {
+            await setDoc(doc(db, 'users', userid), {
+                name: username,
+                todos: {}
+            })
+        }
     }
-
 
     //sign up with google popup
     const signInWithGoogle = async () => {

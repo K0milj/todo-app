@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 
 import { db } from "../firebase-config";
-import { collection, addDoc, serverTimestamp, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase-config';
 
@@ -30,8 +30,6 @@ function Todos() {
         setImportance(event.target.value);
     };
 
-    const todosRef = collection(db, "todos");
-
     const showAddTodo = () => {
         setStyle("showAddTodoWrapper");
     };
@@ -46,7 +44,6 @@ function Todos() {
         onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
         });
-
     }, [])
 
     const addTodo = async () => {
@@ -76,17 +73,6 @@ function Todos() {
             min = '0' + min;
         }
         date = mm + '-' + dd + '-' + y + " " + h + ":" + min;
-
-        //add a todo to the 'todos' collection
-        await addDoc(todosRef, {
-            text: todoName,
-            addedBy: user.displayName || user.email,
-            userPic: user.photoURL,
-            dueDate: date,
-            comments: [],
-            timestamp: serverTimestamp(),
-            importance: importance
-        });
 
         //create a new todo instance
         const todo = {
