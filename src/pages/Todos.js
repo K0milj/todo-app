@@ -49,9 +49,8 @@ function Todos() {
 
     }, [])
 
-    const userRef = doc(db, "users", "Ftg0fMHQyCUsL7ctjtnzSoQghM43");
-
     const addTodo = async () => {
+        const userRef = doc(db, "users", user.uid);
         var date = new Date(todoDate);
         var dd = date.getDate();
 
@@ -78,24 +77,29 @@ function Todos() {
         }
         date = mm + '-' + dd + '-' + y + " " + h + ":" + min;
 
+        //add a todo to the 'todos' collection
         await addDoc(todosRef, {
             text: todoName,
             addedBy: user.displayName || user.email,
+            userPic: user.photoURL,
             dueDate: date,
             comments: [],
             timestamp: serverTimestamp(),
             importance: importance
         });
 
+        //create a new todo instance
         const todo = {
             text: todoName,
             addedBy: user.displayName || user.email,
+            userPic: user.photoURL,
             dueDate: date,
             comments: [],
             importance: importance
         }
 
         await updateDoc(userRef, {
+            //push the new todo in the currently active user's todo array
             todos: arrayUnion(todo)
         });
         window.location.reload();

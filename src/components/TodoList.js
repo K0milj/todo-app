@@ -27,6 +27,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import todopic from "../img/undraw_completing_re_i7ap.svg"
 import ChangeTodoInfo from "./ChangeTodoInfo";
+import { Avatar } from "@mui/material";
 // import { async } from "@firebase/util";
 
 const InputComment = ({ AddComment }) => {
@@ -66,15 +67,15 @@ export default function TodoList() {
 
     //useStates
     const [newTodos, setNewTodos] = useState([]);
-    const [user, setUser] = useState({});
+    //const [user, setUser] = useState({});
     //const [finishedTodos, setFinishedTodos] = useState([]);
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        });
+    // useEffect(() => {
+    //     onAuthStateChanged(auth, (currentUser) => {
+    //         setUser(currentUser);
+    //     });
 
-    }, [])
+    // }, [])
 
     //style for the list component
     const style = {
@@ -87,10 +88,10 @@ export default function TodoList() {
     const todosRef = collection(db, 'todos');
     //const finishedTodosRef = collection(db, "finishedTodos");
 
-    //get the db data
+    //get the db data and display it based on the timestamps
     useEffect(() => {
         const getTodos = async () => {
-            const q = query(todosRef, orderBy("importance", "desc"));
+            const q = query(todosRef, orderBy("timestamp", "desc"));
             const data = await getDocs(q);
             setNewTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
         }
@@ -186,7 +187,7 @@ export default function TodoList() {
                 <Typography variant="h4">You are all done!</Typography>
             </div>
         )
-        //if you have items render this
+    //if you have items render this
     } else {
         return (
             <div>
@@ -195,6 +196,7 @@ export default function TodoList() {
                     <List
                         sx={{
                             minWidth: 360,
+                            maxWidth: 360,
                             backgroundColor: '#f8f8f8',
                             padding: "20px"
                         }}
@@ -213,13 +215,12 @@ export default function TodoList() {
                                         <Typography style={{ color: todo.importance == "Primary" ? "#ff3333" : "black" }}>{todo.text}</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography variant="body2">
-                                            Added by: {todo.addedBy}
+                                        <Typography variant="body2" sx={{display: "flex", alignItems: "center"}}>
+                                            {todo.addedBy} <Avatar sx={{marginLeft: '7px', width: '30px', height: '30px'}} src={todo.userPic ? todo.userPic : ""} alt="profile-pic" referrerPolicy="no-referrer" />
                                         </Typography>
                                         <Typography variant="body2">
                                             Due until: {todo.dueDate}
                                         </Typography>
-                                        {/* <Typography variant="body2">Importance: {todo.importance}</Typography> */}
                                         <Accordion style={{
                                             margin: "10px 0"
                                         }}>
@@ -265,6 +266,7 @@ export default function TodoList() {
                     </List>
                 </div>
                 <div>
+                    {/* popup for when a user tries to enter an empty comment */}
                     <Snackbar
                         open={open}
                         autoHideDuration={3000}

@@ -20,7 +20,7 @@ function Nav() {
   return (
     <nav>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <img style={{ width: 30, height: 30, borderRadius: "50%" }} src={user ? user.photoURL : ""} alt="profile-pic" referrerPolicy="no-referrer" />
+        <Avatar style={{ width: 30, height: 30 }} src={user ? user.photoURL : ""} alt="profile-pic" referrerPolicy="no-referrer" />
         <Link to='/todos' style={{ color: 'white', marginLeft: '10px' }}>{user ? user.displayName : "Not Logged In"}</Link>
       </Box>
       <TemporaryDrawer />

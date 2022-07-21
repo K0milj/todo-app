@@ -14,12 +14,15 @@ import { async } from '@firebase/util';
 function Login() {
     const navigate = useNavigate();
 
+    //add a new user to the 'users' collection (if the user exists, nothing happens)
     const addUser = async (username, userid) => {
         await setDoc(doc(db, 'users', userid), {
             name: username
         })
     }
 
+
+    //sign up with google popup
     const signInWithGoogle = async () => {
         signInWithPopup(auth, provider).then(result => {
             const username = result.user.displayName;
