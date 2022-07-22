@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 
 import { db } from "../firebase-config";
-import { updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { updateDoc, doc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase-config';
 
@@ -74,12 +74,39 @@ function Todos() {
         }
         date = mm + '-' + dd + '-' + y + " " + h + ":" + min;
 
+        var date2 = new Date();
+        var dd = date2.getDate();
+
+        var mm = date2.getMonth() + 1;
+        var y = date2.getFullYear();
+
+        var h = date2.getHours();
+        var min = date2.getMinutes();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        if (h < 10) {
+            h = '0' + h;
+        }
+
+        if (min < 10) {
+            min = '0' + min;
+        }
+        date2 = mm + '-' + dd + '-' + y + " " + h + ":" + min;
+
         //create a new todo instance
         const todo = {
             text: todoName,
             addedBy: user.displayName || user.email,
             userPic: user.photoURL,
             dueDate: date,
+            createdOn: date2,
             comments: [],
             importance: importance
         }

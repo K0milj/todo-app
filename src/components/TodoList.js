@@ -185,7 +185,7 @@ export default function TodoList() {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Typography variant="body2" sx={{ display: "flex", alignItems: "center", marginBottom: '5px' }}>
-                                            {todo.addedBy} <img style={{ marginLeft: '7px', width: '30px', height: '30px', borderRadius: "50%" }} src={todo.userPic ? todo.userPic : ""} alt="profile-pic" referrerPolicy="no-referrer" />
+                                            {todo.addedBy} <img style={{ marginLeft: '7px', width: '30px', height: '30px', borderRadius: "50%" }} src={todo.userPic ? todo.userPic : ""} alt="profile" referrerPolicy="no-referrer" />
                                         </Typography>
                                         <Typography variant="body2">
                                             Due until: {todo.dueDate}
@@ -221,7 +221,7 @@ export default function TodoList() {
                                                 </List>
                                             </AccordionDetails>
                                         </Accordion>
-                                        {/* <Typography sx={{ float: 'right' }} variant="caption">Posted on: {todo.timestamp.toDate().toDateString()}</Typography> */}
+                                        <Typography sx={{ float: 'right' }} variant="caption">Posted on: {todo.createdOn}</Typography>
                                         <div style={{ display: 'flex' }}>
                                             <Tooltip title='Delete Todo'>
                                                 <DeleteOutlineIcon sx={{ marginRight: 1 }} className="icon" onClick={() => deleteTodo(todo)} />
