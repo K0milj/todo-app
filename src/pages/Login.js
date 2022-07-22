@@ -10,11 +10,10 @@ import { Typography } from '@mui/material';
 import GoogleButton from 'react-google-button';
 import { async } from '@firebase/util';
 import heroPic from "../img/undraw_add_notes_re_ln36.svg"
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 
 function Login() {
     const navigate = useNavigate();
-
     //add a new user to the 'users' collection (if the user exists, nothing happens)
     const addUser = async (username, userid) => {
         const docRef = doc(db, "users", userid);
@@ -41,20 +40,19 @@ function Login() {
         })
     }
 
-    document.title = "Todo App";
-
     return (
         <motion.div
-            initial={{width: 0}} animate={{width: '100%'}} exit={{x: window.innerHeight, transition: {duration: 0.15}}}
+            initial={{ width: 0 }} animate={{ width: '100%' }} exit={{ x: window.innerHeight, transition: { duration: 0.15 } }}
         >
             <section className='form-wrapper'>
                 <img src={heroPic} alt='pic' />
                 <Paper className="form">
+                    <Typography></Typography>
                     <Typography sx={{ textAlign: 'center' }}>Get started quick with <b>ONE</b> click!</Typography>
                     <hr style={{ margin: '20px 0', width: "100%" }} />
                     <GoogleButton onClick={signInWithGoogle} variant='contained'>Sign In With Google</GoogleButton>
-                    <Link style={{marginTop: '10px'}} to='/about'>About The Creator</Link>
-                </Paper>     
+                    <Link style={{ marginTop: '10px' }} to='/about'>About The Creator</Link>
+                </Paper>
             </section>
         </motion.div>
     )

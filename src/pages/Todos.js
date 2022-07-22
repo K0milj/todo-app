@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons'
 
 import { db } from "../firebase-config";
-import { updateDoc, doc, arrayUnion, serverTimestamp } from "firebase/firestore";
+import { updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase-config';
 

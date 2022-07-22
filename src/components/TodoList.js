@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from 'react'
 import Nav from './Nav';
 import { db } from "../firebase-config";
-import { collection, getDocs, deleteDoc, updateDoc, doc, query, orderBy, getDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { updateDoc, doc, getDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase-config';
 import List from '@mui/material/List';
@@ -83,13 +83,22 @@ export default function TodoList() {
         bgcolor: 'background.paper',
     };
 
-    //get the db user's todos and display them
-    const getTodos = async () => {
-        const userDoc = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userDoc);
-        const todoList = docSnap.data().todos;
-        setNewTodos(todoList);
-    }
+    useEffect(() => {
+        // due to user can be {} in your case
+        if (!user || !user.uid) return;
+
+        const getTodos = async () => {
+            const userDoc = doc(db, "users", user.uid);
+            const docSnap = await getDoc(userDoc);
+            const todoList = docSnap.data().todos;
+
+            // in case todoList is undefined - newTodos will still be an array
+            // if todos is somehow not an array in firestore - that will not help btw.
+            setNewTodos(todoList || []);
+        };
+        getTodos();
+    }, [user]); // add user here to trigger useEffect when user object changed
+
 
     //delete a user's todo
     const deleteTodo = async (todo) => {
@@ -150,7 +159,7 @@ export default function TodoList() {
     //if no items render this
     if (newTodos.length == 0) {
         return (
-            <div className="no-todos" onLoad={getTodos}>
+            <div className="no-todos">
                 <Nav />
                 <img id="hero-img" src={todopic} alt="todopic" />
                 <Typography variant="h4">You are all done!</Typography>
@@ -172,7 +181,7 @@ export default function TodoList() {
                     >
                         {/* start of mapping out each indivudal item */}
                         {newTodos.map((todo) => (
-                            <div key={todo.text}>
+                            <div key={todo.createdOn}>
                                 <Accordion sx={{
                                     margin: "10px 0",
                                 }}>
