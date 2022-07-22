@@ -14,7 +14,8 @@ Currently, the user can:
 
 Goals:
 
-1. User can create a project and make separate todos for that project
+1. User can create a project and make separate todos for that project (Done)
+1.5 USer can edit and add comments to todos
 2. Make an appointment out of a todo
 3. Make notes
 4. Get a notification if a todo is due soon
