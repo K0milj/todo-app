@@ -4,7 +4,7 @@ import Login from "../pages/Login";
 import About from "../pages/About";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { Routes, Route, useLocation } from 'react-router-dom';
-import {AnimatePresence} from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 function AnimatedRoutes() {
     const location = useLocation();
@@ -16,7 +16,7 @@ function AnimatedRoutes() {
                 <Route path="/about" element={<About />} />
             </Routes>
         </AnimatePresence>
-    ) 
+    )
 }
 
 export default AnimatedRoutes
